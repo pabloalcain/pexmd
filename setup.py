@@ -12,7 +12,7 @@ with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
 requirements = [
-    numpy
+    # TODO: put package requirements here
 ]
 
 setup_requirements = [
@@ -20,7 +20,7 @@ setup_requirements = [
 ]
 
 test_requirements = [
-    numpy, nose
+    # TODO: put package test requirements here
 ]
 
 setup(

@@ -4,8 +4,6 @@
 """The setup script."""
 
 from setuptools import setup, find_packages
-import numpy
-import nose
 with open('README.rst') as readme_file:
     readme = readme_file.read()
 

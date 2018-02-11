@@ -15,11 +15,11 @@ class TestParticles(unittest.TestCase):
   """Tests for `Particles` module."""
 
   def setUp(self):
+    """Set up test fixtures, if any."""
     self.four_positions = np.array([[0.0, 0.0, 0.0], [1.0, 0.0, 0.0],
                                     [-1.0, 0.0, 0.0], [0.0, 1.0, 0.0]])
     self.three_positions = np.array([[0.0, 0.0, 0.0], [1.0, 0.0, 0.0],
-                                    [-1.0, 0.0, 0.0]])
-    """Set up test fixtures, if any."""
+                                     [-1.0, 0.0, 0.0]])
 
   def tearDown(self):
     """Tear down test fixtures, if any."""

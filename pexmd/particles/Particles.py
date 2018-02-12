@@ -26,7 +26,7 @@ class Base(object):
     self._t = t
     self._f = f
     self._mass = mass
-    self._idx = np.arange(n)
+    self.idx = np.arange(n)
 
   @property
   def x(self):

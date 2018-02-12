@@ -29,6 +29,7 @@ class TestParticles(unittest.TestCase):
 
   def test_create_point_particles(self):
     part = particles.PointParticles(3)
+    np.testing.assert_array_equal(part.idx, np.arange(3))
 
   def test_modify_position(self):
     part = particles.PointParticles(4)

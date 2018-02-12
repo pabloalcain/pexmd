@@ -144,7 +144,6 @@ class Base(object):
         msg = "Trying to set {0} masses for a system with {1} particles"
         raise ValueError(msg.format(number, self.n))
 
-
 class PointParticles(Base):
   """
   PointParticles class.

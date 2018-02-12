@@ -16,9 +16,9 @@ class TestParticles(unittest.TestCase):
   def setUp(self):
     """Set up test fixtures, if any."""
     self.four_by3 = np.array([[0.0, 0.0, 0.0], [1.0, 0.0, 0.0],
-                                    [-1.0, 0.0, 0.0], [0.0, 1.0, 0.0]])
+                              [-1.0, 0.0, 0.0], [0.0, 1.0, 0.0]])
     self.three_by3 = np.array([[0.0, 0.0, 0.0], [1.0, 0.0, 0.0],
-                                     [-1.0, 0.0, 0.0]])
+                               [-1.0, 0.0, 0.0]])
 
   def tearDown(self):
     """Tear down test fixtures, if any."""

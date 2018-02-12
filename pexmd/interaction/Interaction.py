@@ -38,6 +38,8 @@ class ShortRange(Interaction):
 
     shift_style: {'None', 'Displace', 'Splines'}
         Shift style when approaching rcut
+
+    .. note:: 'Splines' not implemented yet
     """
     self.rcut = rcut
     self.shift_style = shift_style

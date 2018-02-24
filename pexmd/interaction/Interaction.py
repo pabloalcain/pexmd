@@ -20,7 +20,7 @@ class Interaction(object):
     has to change *dramatically*, even in arity, when we want to add
     lists of neighbors, parallelization and so on.
     """
-    return np.zeros_like(x)
+    return np.zeros_like(x), 0.0
 
 class ShortRange(Interaction):
   """
@@ -64,28 +64,31 @@ class LennardJones(ShortRange):
     i1 = np.arange(len(x))[t == self.types[0]]
     i2 = np.arange(len(x))[t == self.types[1]]
     forces = np.zeros_like(x)
+    energ = 0
     # I have to split it to avoid double-counting. Don't want to get
     # too fancy since it will change when creating neighbor lists
     if self.types[0] == self.types[1]:
       for i, s1 in enumerate(x1):
         for j, s2 in enumerate(x2[i+1:]):
-          f = self._lj(s1, s2)
+          f = self.pair_force(s1, s2)
           ii = i1[i]
           jj = i2[j+i+1]
           forces[ii] += f
           forces[jj] -= f
+          energ += self.pair_energ(s1, s2)
     else:
       for i, s1 in enumerate(x1):
         for j, s2 in enumerate(x2):
-          f = self._lj(s1, s2)
+          f = self.pair_force(s1, s2)
           ii = i1[i]
           jj = i2[j]
           forces[ii] += f
           forces[jj] -= f
-    return forces
+          energ += self.pair_energ(s1, s2)
+    return forces, energ
 
 
-  def _lj(self, s1, s2):
+  def pair_force(self, s1, s2):
     d = np.linalg.norm(s1-s2)
     if d > self.rcut:
       return np.zeros_like(s1)
@@ -94,3 +97,14 @@ class LennardJones(ShortRange):
       return ljf
     elif self.shift_style == 'Displace':
       return ljf
+
+  def pair_energ(self, s1, s2):
+    vcut = 4*self.eps*(self.sigma**12/self.rcut**12 - self.sigma**6/self.rcut**6)
+    d = np.linalg.norm(s1-s2)
+    if d >= self.rcut:
+      return 0
+    ljf = 4*self.eps*(self.sigma**12/d**12 - self.sigma**6/d**6)
+    if self.shift_style == 'None':
+      return ljf
+    elif self.shift_style == 'Displace':
+      return ljf - vcut

@@ -5,7 +5,6 @@
 
 
 import unittest
-from nose.tools import assert_equals, assert_raises
 
 from pexmd import interaction
 import numpy as np
@@ -28,7 +27,7 @@ class TestInteraction(unittest.TestCase):
 
   def test_create_interaction(self):
     i = interaction.Interaction([1, 1])
-    f = i.forces(self.four_by3, self.four_by3, self.four_type)
+    f, e = i.forces(self.four_by3, self.four_by3, self.four_type)
     np.testing.assert_array_almost_equal(f, np.zeros_like(self.four_by3))
 
 
@@ -40,38 +39,58 @@ class TestInteraction(unittest.TestCase):
 
   def test_lj_two_noshift(self):
     lj = interaction.LennardJones([1, 1], 5.4, 1.0, 1.0, "None")
-    f = lj._lj(np.array([2.0**(1.0/6), 0.0, 0.0]),
-               np.array([0.0, 0.0, 0.0]))
+    f = lj.pair_force(np.array([2.0**(1.0/6), 0.0, 0.0]),
+                      np.array([0.0, 0.0, 0.0]))
+    e = lj.pair_energ(np.array([2.0**(1.0/6), 0.0, 0.0]),
+                      np.array([0.0, 0.0, 0.0]))
     np.testing.assert_array_almost_equal(f, np.zeros(3))
-    f = lj._lj(np.array([0.0, 1.0, 0.0]),
-               np.array([0.0, 0.0, 0.0]))
+    np.testing.assert_almost_equal(e, -1.0)
+    f = lj.pair_force(np.array([0.0, 1.0, 0.0]),
+                      np.array([0.0, 0.0, 0.0]))
+    e = lj.pair_energ(np.array([0.0, 1.0, 0.0]),
+                      np.array([0.0, 0.0, 0.0]))
     np.testing.assert_array_almost_equal(f, np.array([0, 24, 0]))
-    f = lj._lj(np.array([0.0, 7.0, 0.0]),
-               np.array([0.0, 0.0, 0.0]))
+    np.testing.assert_almost_equal(e, 0.0)
+    f = lj.pair_force(np.array([0.0, 7.0, 0.0]),
+                      np.array([0.0, 0.0, 0.0]))
+    e = lj.pair_energ(np.array([0.0, 7.0, 0.0]),
+                      np.array([0.0, 0.0, 0.0]))
     np.testing.assert_array_almost_equal(f, np.zeros(3))
+    np.testing.assert_almost_equal(e, 0.0)
 
   def test_lj_two_displace(self):
     lj = interaction.LennardJones([1, 1], 5.4, 1.0, 1.0, "Displace")
-    f = lj._lj(np.array([2.0**(1.0/6), 0.0, 0.0]),
-               np.array([0.0, 0.0, 0.0]))
+    vcut = -0.0001613169181702531
+
+    f = lj.pair_force(np.array([2.0**(1.0/6), 0.0, 0.0]),
+                      np.array([0.0, 0.0, 0.0]))
+    e = lj.pair_energ(np.array([2.0**(1.0/6), 0.0, 0.0]),
+                      np.array([0.0, 0.0, 0.0]))
+    np.testing.assert_almost_equal(e, -1.0 - vcut)
     np.testing.assert_array_almost_equal(f, np.zeros(3))
-    f = lj._lj(np.array([0.0, 1.0, 0.0]),
-               np.array([0.0, 0.0, 0.0]))
+    f = lj.pair_force(np.array([0.0, 1.0, 0.0]),
+                      np.array([0.0, 0.0, 0.0]))
+    e = lj.pair_energ(np.array([0.0, 1.0, 0.0]),
+                      np.array([0.0, 0.0, 0.0]))
     np.testing.assert_array_almost_equal(f, np.array([0, 24, 0]))
-    f = lj._lj(np.array([0.0, 7.0, 0.0]),
-               np.array([0.0, 0.0, 0.0]))
+    np.testing.assert_almost_equal(e, 0.0 - vcut)
+    f = lj.pair_force(np.array([0.0, 7.0, 0.0]),
+                      np.array([0.0, 0.0, 0.0]))
+    e = lj.pair_energ(np.array([0.0, 7.0, 0.0]),
+                      np.array([0.0, 0.0, 0.0]))
     np.testing.assert_array_almost_equal(f, np.zeros(3))
+    np.testing.assert_almost_equal(e, 0.0)
 
   def test_lj_forces_equal(self):
     lj = interaction.LennardJones([1, 1], 5.4, 1.0, 1.0, "None")
-    f = lj.forces(self.four_by3, self.four_by3, self.four_type)
+    f, e = lj.forces(self.four_by3, self.four_by3, self.four_type)
     force_by_hand = np.array([[0.0, 0.0, 0.0], [23.63671875, 0.0, 0.0],
-                               [-23.63671875, 0.0, 0.0], [0.0, 0.0, 0.0]])
+                              [-23.63671875, 0.0, 0.0], [0.0, 0.0, 0.0]])
     np.testing.assert_array_almost_equal(f, force_by_hand)
 
   def test_lj_forces_diff(self):
     lj = interaction.LennardJones([1, 2], 5.4, 1.0, 1.0, "None")
-    f = lj.forces(self.four_by3, self.four_by3, self.two_two_type)
+    f, e = lj.forces(self.four_by3, self.four_by3, self.two_two_type)
     force_by_hand = np.array([[24.0, 0.0, 0.0], [-0.36328125, 0.0, 0.0],
                               [-23.63671875, 0.0, 0.0], [0.0, 0.0, 0.0]])
     np.testing.assert_array_almost_equal(f, force_by_hand)

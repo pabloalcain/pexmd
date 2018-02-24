@@ -84,13 +84,13 @@ class TestInteraction(unittest.TestCase):
   def test_lj_forces_equal(self):
     lj = interaction.LennardJones([1, 1], 5.4, 1.0, 1.0, "None")
     f, e = lj.forces(self.four_by3, self.four_by3, self.four_type)
-    force_by_hand = np.array([[0.0, 0.0, 0.0], [23.63671875, 0.0, 0.0],
-                              [-23.63671875, 0.0, 0.0], [0.0, 0.0, 0.0]])
+    force_by_hand = np.array([[0.0, 0.0, 0.0], [23.818359, 0.0, 0.0],
+                              [-23.818359, 0.0, 0.0], [0.0, 0.0, 0.0]])
     np.testing.assert_array_almost_equal(f, force_by_hand)
 
   def test_lj_forces_diff(self):
     lj = interaction.LennardJones([1, 2], 5.4, 1.0, 1.0, "None")
     f, e = lj.forces(self.four_by3, self.four_by3, self.two_two_type)
-    force_by_hand = np.array([[24.0, 0.0, 0.0], [-0.36328125, 0.0, 0.0],
-                              [-23.63671875, 0.0, 0.0], [0.0, 0.0, 0.0]])
+    force_by_hand = np.array([[24.0, 0.0, 0.0], [-0.181641, 0.0, 0.0],
+                              [-23.818359, 0.0, 0.0], [0.0, 0.0, 0.0]])
     np.testing.assert_array_almost_equal(f, force_by_hand)

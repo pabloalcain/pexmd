@@ -92,7 +92,7 @@ class LennardJones(ShortRange):
     d = np.linalg.norm(s1-s2)
     if d > self.rcut:
       return np.zeros_like(s1)
-    ljf = 24*self.eps*(2*self.sigma**12/d**13 - self.sigma**6/d**7)*(s1-s2)
+    ljf = 24*self.eps*(2*self.sigma**12/d**14 - self.sigma**6/d**8)*(s1-s2)
     if self.shift_style == 'None':
       return ljf
     elif self.shift_style == 'Displace':

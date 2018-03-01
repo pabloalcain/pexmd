@@ -55,6 +55,12 @@ class TestParticles(unittest.TestCase):
     assert_raises(ValueError, sttr, self.three_by3)
     np.testing.assert_array_equal(part.f, self.four_by3)
 
+  def test_calculate_acceleration(self):
+    part = particles.PointParticles(4)
+    part.f = self.four_by3
+    part.mass = 2.0
+    np.testing.assert_array_equal(part.a, self.four_by3/2)
+
   def test_modify_type(self):
     part = particles.PointParticles(4)
     part.t = np.array([1, 1, 2, 2], dtype=np.int32)

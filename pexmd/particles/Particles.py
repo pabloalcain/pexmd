@@ -95,6 +95,10 @@ class Base(object):
       raise ValueError(msg.format(number, self.n))
 
   @property
+  def a(self):
+    return self._f/self._mass[:, np.newaxis]
+
+  @property
   def t(self):
     return self._t
 

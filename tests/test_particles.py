@@ -19,7 +19,10 @@ class TestParticles(unittest.TestCase):
                               [-1.0, 0.0, 0.0], [0.0, 1.0, 0.0]])
     self.three_by3 = np.array([[0.0, 0.0, 0.0], [1.0, 0.0, 0.0],
                                [-1.0, 0.0, 0.0]])
-
+    self.lfour_by3 = [[0.0, 0.0, 0.0], [1.0, 0.0, 0.0],
+                      [-1.0, 0.0, 0.0], [0.0, 1.0, 0.0]]
+    self.lthree_by3 = [[0.0, 0.0, 0.0], [1.0, 0.0, 0.0],
+                       [-1.0, 0.0, 0.0]]
   def tearDown(self):
     """Tear down test fixtures, if any."""
 
@@ -31,17 +34,35 @@ class TestParticles(unittest.TestCase):
     part = particles.PointParticles(3)
     np.testing.assert_array_equal(part.idx, np.arange(3))
 
-  def test_modify_position(self):
+  def test_set_position_from_array(self):
     part = particles.PointParticles(4)
     part.x = self.four_by3
     assert_equals(part.n, 4)
+
+  def test_set_position_from_list(self):
+    part = particles.PointParticles(4)
+    part.x = self.lfour_by3
+    assert_equals(part.n, 4)
+    assert_equals(type(part.x), np.ndarray)
+
+  def test_set_position_wrong_size(self):
+    part = particles.PointParticles(4)
     sttr = lambda x: part.__setattr__("x", x)
     assert_raises(ValueError, sttr, self.three_by3)
+
+
+  def test_modify_position(self):
+    part = particles.PointParticles(4)
+    me = self.four_by3.copy()
+    part.x = self.four_by3
     np.testing.assert_array_equal(part.x, self.four_by3)
+    part.x[0, 0] = 1000
+    np.testing.assert_array_equal(me, self.four_by3)
 
   def test_modify_velocity(self):
     part = particles.PointParticles(4)
-    part.v = self.four_by3
+    part.x = self.four_by3
+    part.v = self.lfour_by3
     assert_equals(part.n, 4)
     sttr = lambda v: part.__setattr__("v", v)
     assert_raises(ValueError, sttr, self.three_by3)

@@ -33,6 +33,7 @@ class Base(object):
     value : 2D NumPy array
         The new positons of particles in an Nx3 array
     """
+    value = np.array(value, dtype=np.float32)
     number = np.shape(value)[0]
     if self.n == number:
       self._x = value
@@ -55,6 +56,7 @@ class Base(object):
     value : 2D NumPy array
         The new velocities of particles in an Nx3 array
     """
+    value = np.array(value, dtype=np.float32)
     number = np.shape(value)[0]
     if self.n == number:
       self._v = value
@@ -77,6 +79,7 @@ class Base(object):
     value : 2D NumPy array
         The new forces of particles in an Nx3 array
     """
+    value = np.array(value, dtype=np.float32)
     number = np.shape(value)[0]
     if self.n == number:
       self._f = value
@@ -103,9 +106,10 @@ class Base(object):
     value : 1D NumPy array or integer
         The new types of particles in an Nx3 array
     """
-    if type(value) == int:
-      self._t = np.array([value]*self.n)
+    if np.isscalar(value):
+      self._t = np.array([value]*self.n, dtype=np.int32)
     else:
+      value = np.array(value)
       number = np.shape(value)[0]
       if self.n == number:
         self._f = value
@@ -128,9 +132,10 @@ class Base(object):
     value : 1D NumPy array or integer
         The new types of particles in an Nx3 array
     """
-    if type(value) == float:
-      self._mass = np.array([value]*self.n)
+    if np.isscalar(value):
+      self._mass = np.array([value]*self.n, dtype=np.float32)
     else:
+      value = np.array(value)
       number = np.shape(value)[0]
       if self.n == number:
         self._mass = value

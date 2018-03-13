@@ -9,23 +9,13 @@ class Base(object):
   Base Particles class. It is abstract and we should specify which
   type of particle we actually want in order to fill it
   """
-  def __init__(self, n, x=None, v=None, t=None, f=None, mass=None):
+  def __init__(self, n):
     self.n = n
-    if not x:
-      x = np.zeros((n, 3), dtype=np.float32)
-    if not v:
-      v = np.zeros((n, 3), dtype=np.float32)
-    if not f:
-      f = np.zeros((n, 3), dtype=np.float32)
-    if not t:
-      t = np.zeros(n, dtype=np.int32)
-    if not mass:
-      mass = np.zeros(n, dtype=np.float32)
-    self._x = x
-    self._v = v
-    self._t = t
-    self._f = f
-    self._mass = mass
+    self._x = np.zeros((n, 3), dtype=np.float32)
+    self._v = np.zeros((n, 3), dtype=np.float32)
+    self._f = np.zeros((n, 3), dtype=np.float32)
+    self._t = np.zeros(n, dtype=np.int32)
+    self._mass = np.zeros(n, dtype=np.float32)
     self.idx = np.arange(n)
 
   @property

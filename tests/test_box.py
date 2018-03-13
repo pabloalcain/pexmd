@@ -16,7 +16,9 @@ class TestIntegrator(unittest.TestCase):
   def setUp(self):
     """Set up test fixtures, if any."""
     self.x0 = np.array([-2.0, -1.0, 1.0])
+    self.lx0 = [-2.0, -1.0, 1.0]
     self.xf = np.array([3.0, 4.0, 4.0])
+    self.lxf = [3.0, 4.0, 4.0]
     self.x = np.array([[-1.0, 5.0, 2.0], [7.0, -3.0, -8.0]])
     self.v = np.array([[0.1, 0.1, -0.1], [-0.5, -0.3, -0.8]])
 
@@ -32,6 +34,18 @@ class TestIntegrator(unittest.TestCase):
   def test_create_box(self):
     """Create an empty periodic box."""
     b = box.Box(self.x0, self.xf, t='Periodic')
+
+  def test_create_box_from_list(self):
+    """Create an empty periodic box from a list."""
+    b = box.Box(self.lx0, self.lxf, t='Periodic')
+    np.testing.assert_array_almost_equal(b.x0, self.x0)
+    np.testing.assert_array_almost_equal(b.xf, self.xf)
+
+  def test_create_box_from_scalar(self):
+    """Create an empty periodic box from an scalar."""
+    b = box.Box(-1.5, 1.5, t='Periodic')
+    np.testing.assert_array_almost_equal(b.x0, np.array([-1.5, -1.5, -1.5], dtype=np.float32))
+    np.testing.assert_array_almost_equal(b.xf, np.array([1.5, 1.5, 1.5], dtype=np.float32))
 
   def test_wrap_periodic(self):
     """Wrap through PBC."""

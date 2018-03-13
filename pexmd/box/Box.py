@@ -22,8 +22,14 @@ class Box(object):
     t : {'Periodic', 'Fixed'}
         Type of boundary
     """
-    self.x0 = np.array(x0)
-    self.xf = np.array(xf)
+    if np.isscalar(x0):
+      self.x0 = np.array([x0]*3, dtype=np.float32)
+    else:
+      self.x0 = np.array(x0, dtype=np.float32)
+    if np.isscalar(xf):
+      self.xf = np.array([xf]*3, dtype=np.float32)
+    else:
+      self.xf = np.array(xf, dtype=np.float32)
     self.t = t
 
   def wrap_boundary(self, x, v):

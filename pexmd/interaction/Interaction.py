@@ -45,16 +45,6 @@ class ShortRange(Interaction):
     self.shift_style = shift_style
     super().__init__(types)
 
-
-class LennardJones(ShortRange):
-  """
-  Lennard-Jones potential
-  """
-  def __init__(self, types, rcut, eps, sigma, shift_style='None'):
-    self.eps = eps
-    self.sigma = sigma
-    super().__init__(types, rcut, shift_style)
-
   def forces(self, x, v, t):
     """
     Calculate Lennard-Jones force
@@ -86,6 +76,21 @@ class LennardJones(ShortRange):
           forces[jj] -= f
           energ += self.pair_energ(s1, s2)
     return forces, energ
+
+  def pair_force(self, s1, s2):
+    return np.array([0, 0, 0], dtype=np.float32)
+
+  def pair_energ(self, s1, s2):
+    return 0.0
+
+class LennardJones(ShortRange):
+  """
+  Lennard-Jones potential
+  """
+  def __init__(self, types, rcut, eps, sigma, shift_style='None'):
+    self.eps = eps
+    self.sigma = sigma
+    super().__init__(types, rcut, shift_style)
 
 
   def pair_force(self, s1, s2):

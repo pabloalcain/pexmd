@@ -3,6 +3,7 @@ Main Interaction module.
 """
 
 import numpy as np
+import itertools as it
 
 class Interaction(object):
   """
@@ -49,32 +50,22 @@ class ShortRange(Interaction):
     """
     Calculate Lennard-Jones force
     """
-    x1 = x[t == self.types[0]]
-    x2 = x[t == self.types[1]]
-    i1 = np.arange(len(x))[t == self.types[0]]
-    i2 = np.arange(len(x))[t == self.types[1]]
-    forces = np.zeros_like(x)
+    idx = np.arange(len(x))
+    t1, t2 = self.types
     energ = 0
-    # I have to split it to avoid double-counting. Don't want to get
-    # too fancy since it will change when creating neighbor lists
-    if self.types[0] == self.types[1]:
-      for i, s1 in enumerate(x1):
-        for j, s2 in enumerate(x2[i+1:]):
-          f = self.pair_force(s1, s2)
-          ii = i1[i]
-          jj = i2[j+i+1]
-          forces[ii] += f
-          forces[jj] -= f
-          energ += self.pair_energ(s1, s2)
+    forces = np.zeros_like(x)
+    p1 = idx[t==t1]
+    if t1 == t2:
+      pairs = it.combinations(p1, 2)
     else:
-      for i, s1 in enumerate(x1):
-        for j, s2 in enumerate(x2):
-          f = self.pair_force(s1, s2)
-          ii = i1[i]
-          jj = i2[j]
-          forces[ii] += f
-          forces[jj] -= f
-          energ += self.pair_energ(s1, s2)
+      p2 = idx[t==t2]
+      pairs = it.product(p1, p2)
+
+    for i, j in pairs:
+      f = self.pair_force(x[i], x[j])
+      energ += self.pair_energ(x[i], x[j])
+      forces[i] += f
+      forces[j] -= f
     return forces, energ
 
   def pair_force(self, s1, s2):

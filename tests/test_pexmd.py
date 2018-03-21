@@ -6,8 +6,7 @@
 
 import unittest
 
-from pexmd import pexmd
-
+import pexmd
 
 class TestPexmd(unittest.TestCase):
     """Tests for `pexmd` package."""
@@ -18,5 +17,8 @@ class TestPexmd(unittest.TestCase):
     def tearDown(self):
         """Tear down test fixtures, if any."""
 
-    def test_000_something(self):
-        """Test something."""
+    def test_import(self):
+        pexmd.particles
+        pexmd.box
+        pexmd.integrator
+        pexmd.interaction

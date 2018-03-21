@@ -112,7 +112,7 @@ class Base(object):
       value = np.array(value)
       number = np.shape(value)[0]
       if self.n == number:
-        self._f = value
+        self._t = value
       else:
         msg = "Trying to set {0} types for a system with {1} particles"
         raise ValueError(msg.format(number, self.n))

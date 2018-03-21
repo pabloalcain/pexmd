@@ -85,7 +85,7 @@ class TestParticles(unittest.TestCase):
   def test_modify_type(self):
     part = particles.PointParticles(4)
     part.t = np.array([1, 1, 2, 2], dtype=np.int32)
-    assert_equals(part.n, 4)
+    np.testing.assert_array_equal(part.t, np.array([1, 1, 2, 2]))
     part.t = 1
     np.testing.assert_array_equal(part.t, np.array([1, 1, 1, 1], dtype=np.int32))
     sttr = lambda t: part.__setattr__("t", t)

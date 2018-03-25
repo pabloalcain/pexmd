@@ -24,32 +24,33 @@ class TestNeighbour(unittest.TestCase):
     self.neigh12 = neighbour.Neighbour([1, 2])
     self.neigh13 = neighbour.Neighbour([1, 3])
     self.neigh23 = neighbour.Neighbour([2, 3])
-    self.pair_all = [(0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3)]
+    self.pair_all = np.array([(0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3)],
+                             dtype=np.int64)
 
   def test_type11(self):
     pair = self.neigh11.build_list(None, self.four_types)
-    assert_equals(list(pair), self.pair_all)
+    np.testing.assert_array_equal(pair, self.pair_all)
     pair = self.neigh12.build_list(None, self.four_types)
     assert_equals(list(pair), [])
 
   def test_type12(self):
     pair = self.neigh11.build_list(None, self.two_two_types)
-    assert_equals(list(pair), [(0, 1)])
+    np.testing.assert_array_equal(pair, [(0, 1)])
     pair = self.neigh12.build_list(None, self.two_two_types)
-    assert_equals(list(pair), [(0, 2), (0, 3), (1, 2), (1, 3)])
+    np.testing.assert_array_equal(pair, [(0, 2), (0, 3), (1, 2), (1, 3)])
     pair = self.neigh22.build_list(None, self.two_two_types)
-    assert_equals(list(pair), [(2, 3)])
+    np.testing.assert_array_equal(pair, [(2, 3)])
     pair = self.neighall.build_list(None, self.two_two_types)
-    assert_equals(list(pair), self.pair_all)
+    np.testing.assert_array_equal(pair, self.pair_all)
 
   def test_type123(self):
     pair = self.neigh11.build_list(None, self.two_one_one_types)
-    assert_equals(list(pair), [(0, 1)])
+    np.testing.assert_array_equal(pair, [(0, 1)])
     pair = self.neigh12.build_list(None, self.two_one_one_types)
-    assert_equals(list(pair), [(0, 2), (1, 2)])
+    np.testing.assert_array_equal(pair, [(0, 2), (1, 2)])
     pair = self.neigh22.build_list(None, self.two_one_one_types)
-    assert_equals(list(pair), [])
+    np.testing.assert_array_equal(pair, [])
     pair = self.neigh23.build_list(None, self.two_one_one_types)
-    assert_equals(list(pair), [(2, 3)])
+    np.testing.assert_array_equal(pair, [(2, 3)])
     pair = self.neighall.build_list(None, self.two_two_types)
-    assert_equals(list(pair), self.pair_all)
+    np.testing.assert_array_equal(pair, self.pair_all)

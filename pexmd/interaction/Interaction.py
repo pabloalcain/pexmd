@@ -12,7 +12,7 @@ class Interaction(object):
   def __init__(self):
     pass
 
-  def forces(self, x, v, t):
+  def forces(self, x, v, pairs=None):
     """
     Main loop calculation.
 

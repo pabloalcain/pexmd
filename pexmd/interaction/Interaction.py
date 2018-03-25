@@ -76,6 +76,20 @@ class LennardJones(ShortRange):
     self.sigma = sigma
     super().__init__(rcut, shift_style)
 
+  def forces(self, x, v, pairs=None):
+    """
+    Calculate Lennard-Jones force
+    """
+    energ = 0
+    forces = np.zeros_like(x)
+    if pairs == None:
+      pairs = np.array(list(it.combinations(range(len(x)), 2)), dtype=np.int64)
+    for i, j in pairs:
+      f = self.pair_force(x[i], x[j])
+      energ += self.pair_energ(x[i], x[j])
+      forces[i] += f
+      forces[j] -= f
+    return forces, energ
 
   def pair_force(self, s1, s2):
     d = np.linalg.norm(s1-s2)

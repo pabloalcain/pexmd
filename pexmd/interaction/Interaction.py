@@ -9,8 +9,8 @@ class Interaction(object):
   """
   Base Interaction class.
   """
-  def __init__(self, types):
-    self.types = types
+  def __init__(self):
+    pass
 
   def forces(self, x, v, t):
     """
@@ -27,7 +27,7 @@ class ShortRange(Interaction):
   """
   Base short-range class
   """
-  def __init__(self, types, rcut, shift_style='None'):
+  def __init__(self, rcut, shift_style='None'):
     """
     Base short-range class
 
@@ -44,23 +44,16 @@ class ShortRange(Interaction):
     """
     self.rcut = rcut
     self.shift_style = shift_style
-    super().__init__(types)
+    super().__init__()
 
-  def forces(self, x, v, t):
+  def forces(self, x, v, pairs=None):
     """
     Calculate Lennard-Jones force
     """
-    idx = np.arange(len(x))
-    t1, t2 = self.types
     energ = 0
     forces = np.zeros_like(x)
-    p1 = idx[t==t1]
-    if t1 == t2:
-      pairs = it.combinations(p1, 2)
-    else:
-      p2 = idx[t==t2]
-      pairs = it.product(p1, p2)
-
+    if pairs == None:
+      pairs = it.combinations(range(len(x)), 2)
     for i, j in pairs:
       f = self.pair_force(x[i], x[j])
       energ += self.pair_energ(x[i], x[j])
@@ -78,10 +71,10 @@ class LennardJones(ShortRange):
   """
   Lennard-Jones potential
   """
-  def __init__(self, types, rcut, eps, sigma, shift_style='None'):
+  def __init__(self, rcut, eps, sigma, shift_style='None'):
     self.eps = eps
     self.sigma = sigma
-    super().__init__(types, rcut, shift_style)
+    super().__init__(rcut, shift_style)
 
 
   def pair_force(self, s1, s2):

@@ -26,19 +26,19 @@ class TestInteraction(unittest.TestCase):
     pass
 
   def test_create_interaction(self):
-    i = interaction.Interaction([1, 1])
+    i = interaction.Interaction()
     f, e = i.forces(self.four_by3, self.four_by3, self.four_type)
     np.testing.assert_array_almost_equal(f, np.zeros_like(self.four_by3))
 
 
   def test_create_shortrange(self):
-    interaction.ShortRange([1, 1], 5.4, "None")
+    interaction.ShortRange(5.4, "None")
 
   def test_create_lennardjones(self):
-    interaction.LennardJones([1, 1], 5.4, 1.0, 1.0, "None")
+    interaction.LennardJones(5.4, 1.0, 1.0, "None")
 
   def test_lj_two_noshift(self):
-    lj = interaction.LennardJones([1, 1], 5.4, 1.0, 1.0, "None")
+    lj = interaction.LennardJones(5.4, 1.0, 1.0, "None")
     f = lj.pair_force(np.array([2.0**(1.0/6), 0.0, 0.0]),
                       np.array([0.0, 0.0, 0.0]))
     e = lj.pair_energ(np.array([2.0**(1.0/6), 0.0, 0.0]),
@@ -59,7 +59,7 @@ class TestInteraction(unittest.TestCase):
     np.testing.assert_almost_equal(e, 0.0)
 
   def test_lj_two_displace(self):
-    lj = interaction.LennardJones([1, 1], 5.4, 1.0, 1.0, "Displace")
+    lj = interaction.LennardJones(5.4, 1.0, 1.0, "Displace")
     vcut = -0.0001613169181702531
 
     f = lj.pair_force(np.array([2.0**(1.0/6), 0.0, 0.0]),
@@ -82,15 +82,15 @@ class TestInteraction(unittest.TestCase):
     np.testing.assert_almost_equal(e, 0.0)
 
   def test_lj_forces_equal(self):
-    lj = interaction.LennardJones([1, 1], 5.4, 1.0, 1.0, "None")
-    f, e = lj.forces(self.four_by3, self.four_by3, self.four_type)
+    lj = interaction.LennardJones(5.4, 1.0, 1.0, "None")
+    f, e = lj.forces(self.four_by3, self.four_by3)
     force_by_hand = np.array([[0.0, 0.0, 0.0], [23.818359, 0.0, 0.0],
                               [-23.818359, 0.0, 0.0], [0.0, 0.0, 0.0]])
     np.testing.assert_array_almost_equal(f, force_by_hand)
 
   def test_lj_forces_diff(self):
-    lj = interaction.LennardJones([1, 2], 5.4, 1.0, 1.0, "None")
-    f, e = lj.forces(self.four_by3, self.four_by3, self.two_two_type)
+    lj = interaction.LennardJones(5.4, 1.0, 1.0, "None")
+    f, e = lj.forces(self.four_by3, self.four_by3, pairs=[[0, 2], [0, 3], [1, 2], [1, 3]])
     force_by_hand = np.array([[24.0, 0.0, 0.0], [-0.181641, 0.0, 0.0],
                               [-23.818359, 0.0, 0.0], [0.0, 0.0, 0.0]])
     np.testing.assert_array_almost_equal(f, force_by_hand)

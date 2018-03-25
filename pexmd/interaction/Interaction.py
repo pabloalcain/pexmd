@@ -53,7 +53,7 @@ class ShortRange(Interaction):
     energ = 0
     forces = np.zeros_like(x)
     if pairs == None:
-      pairs = it.combinations(range(len(x)), 2)
+      pairs = np.array(list(it.combinations(range(len(x)), 2)), dtype=np.int64)
     for i, j in pairs:
       f = self.pair_force(x[i], x[j])
       energ += self.pair_energ(x[i], x[j])

@@ -54,7 +54,7 @@ class ShortRange(Interaction):
     """
     energ = 0
     forces = np.zeros_like(x)
-    if pairs == None:
+    if pairs is None:
       pairs = np.array(list(it.combinations(range(len(x)), 2)), dtype=np.int64)
     for i, j in pairs:
       f = self.pair_force(x[i], x[j])
@@ -90,7 +90,7 @@ class LennardJones(ShortRange):
     """
     energ = 0
     forces = np.zeros_like(x, dtype=np.float32)
-    if pairs == None:
+    if pairs is None:
       pairs = np.array(list(it.combinations(range(len(x)), 2)), dtype=np.int64)
     xp = x.ctypes.data_as(ct.c_voidp)
     pairsp = pairs.ctypes.data_as(ct.c_voidp)

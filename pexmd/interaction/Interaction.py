@@ -95,7 +95,7 @@ class LennardJones(ShortRange):
     xp = x.ctypes.data_as(ct.c_voidp)
     pairsp = pairs.ctypes.data_as(ct.c_voidp)
     forcesp = forces.ctypes.data_as(ct.c_voidp)
-    ljforces_c(xp, pairsp, len(pairs), self.eps, self.sigma, self.rcut, forcesp)
+    energ = ljforces_c(xp, pairsp, len(pairs), self.eps, self.sigma, self.rcut, forcesp)
     return forces, energ
 
   def pair_force(self, s1, s2):

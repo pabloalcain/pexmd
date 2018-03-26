@@ -4,6 +4,8 @@ Main Interaction module.
 
 import numpy as np
 import itertools as it
+import ctypes as ct
+
 
 class Interaction(object):
   """
@@ -67,6 +69,12 @@ class ShortRange(Interaction):
   def pair_energ(self, s1, s2):
     return 0.0
 
+lj = ct.CDLL('/home/pablo/proyectos/pexmd/pexmd/interaction/lj.so')
+ljforces_c = lj.forces
+ljforces_c.argtypes = [ct.c_voidp, ct.c_voidp, ct.c_longlong, ct.c_float,
+                       ct.c_float, ct.c_float, ct.c_voidp]
+ljforces_c.restype = ct.c_float
+
 class LennardJones(ShortRange):
   """
   Lennard-Jones potential
@@ -81,14 +89,13 @@ class LennardJones(ShortRange):
     Calculate Lennard-Jones force
     """
     energ = 0
-    forces = np.zeros_like(x)
+    forces = np.zeros_like(x, dtype=np.float32)
     if pairs == None:
       pairs = np.array(list(it.combinations(range(len(x)), 2)), dtype=np.int64)
-    for i, j in pairs:
-      f = self.pair_force(x[i], x[j])
-      energ += self.pair_energ(x[i], x[j])
-      forces[i] += f
-      forces[j] -= f
+    xp = x.ctypes.data_as(ct.c_voidp)
+    pairsp = pairs.ctypes.data_as(ct.c_voidp)
+    forcesp = forces.ctypes.data_as(ct.c_voidp)
+    ljforces_c(xp, pairsp, len(pairs), self.eps, self.sigma, self.rcut, forcesp)
     return forces, energ
 
   def pair_force(self, s1, s2):

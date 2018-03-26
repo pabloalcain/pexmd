@@ -19,14 +19,14 @@ class TestIntegrator(unittest.TestCase):
     self.lx0 = [-2.0, -1.0, 1.0]
     self.xf = np.array([3.0, 4.0, 4.0])
     self.lxf = [3.0, 4.0, 4.0]
-    self.x = np.array([[-1.0, 5.0, 2.0], [7.0, -3.0, -8.0]])
-    self.v = np.array([[0.1, 0.1, -0.1], [-0.5, -0.3, -0.8]])
+    self.x = np.array([[-1.0, 5.0, 2.0], [7.0, -3.0, -8.0]], dtype=np.float32)
+    self.v = np.array([[0.1, 0.1, -0.1], [-0.5, -0.3, -0.8]], dtype=np.float32)
 
-    self.x_pbc = np.array([[-1.0, 0.0, 2.0], [2.0, 2.0, 1.0]])
-    self.v_pbc = np.array([[0.1, 0.1, -0.1], [-0.5, -0.3, -0.8]])
+    self.x_pbc = np.array([[-1.0, 0.0, 2.0], [2.0, 2.0, 1.0]], dtype=np.float32)
+    self.v_pbc = np.array([[0.1, 0.1, -0.1], [-0.5, -0.3, -0.8]], dtype=np.float32)
 
-    self.x_fbc = np.array([[-1.0, 3.0, 2.0], [-1.0, 1.0, 4.0]])
-    self.v_fbc = np.array([[0.1, -0.1, -0.1], [0.5, 0.3, 0.8]])
+    self.x_fbc = np.array([[-1.0, 3.0, 2.0], [-1.0, 1.0, 4.0]], dtype=np.float32)
+    self.v_fbc = np.array([[0.1, -0.1, -0.1], [0.5, 0.3, 0.8]], dtype=np.float32)
 
   def tearDown(self):
     """Tear down test fixtures, if any."""

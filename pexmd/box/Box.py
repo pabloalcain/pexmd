@@ -3,6 +3,13 @@ Main box module
 """
 
 import numpy as np
+import ctypes as ct
+
+box = ct.CDLL('pexmd/box/box.so')
+boxperiodic_c = box.periodic
+boxperiodic_c.argtypes = [ct.c_voidp, ct.c_longlong, ct.c_voidp, ct.c_voidp]
+boxfixed_c = box.fixed
+boxfixed_c.argtypes = [ct.c_voidp, ct.c_voidp, ct.c_longlong, ct.c_voidp, ct.c_voidp]
 
 class Box(object):
   """
@@ -32,6 +39,7 @@ class Box(object):
       self.xf = np.array(xf, dtype=np.float32)
     self.t = t
 
+
   def wrap_boundary(self, x, v):
     """
     Apply boundary conditions
@@ -48,29 +56,13 @@ class Box(object):
     x, v : NumPy array
         Positions and velocities updated
     """
-    x_b = np.copy(x)
-    v_b = np.copy(v)
+    x0p = self.x0.ctypes.data_as(ct.c_voidp)
+    xfp = self.xf.ctypes.data_as(ct.c_voidp)
+    xp = x.ctypes.data_as(ct.c_voidp)
+    npart = len(x)
     if self.t == 'Periodic':
-      l = self.xf - self.x0
-      for i, pos in enumerate(x):
-        for j, p in enumerate(pos):
-          while p > self.xf[j]:
-            p -= l[j]
-          while p < self.x0[j]:
-            p += l[j]
-          x_b[i, j] = p
+      boxperiodic_c(xp, npart, x0p, xfp)
     elif self.t == 'Fixed':
-      l = self.xf - self.x0
-      for i, pos in enumerate(x):
-        for j, p in enumerate(pos):
-          m = 1
-          while (p > self.xf[j]) or (p < self.x0[j]):
-            if p > self.xf[j]:
-              m *= -1
-              p = 2*self.xf[j] - p
-            if p < self.x0[j]:
-              p = 2*self.x0[j] - p
-              m *= -1
-          x_b[i, j] = p
-          v_b[i, j] *= m
-    return x_b, v_b
+      vp = v.ctypes.data_as(ct.c_voidp)
+      boxfixed_c(xp, vp, npart, x0p, xfp)
+    return x, v

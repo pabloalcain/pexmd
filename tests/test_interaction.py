@@ -15,9 +15,9 @@ class TestInteraction(unittest.TestCase):
   def setUp(self):
     """Set up test fixtures, if any."""
     self.four_by3 = np.array([[0.0, 0.0, 0.0], [1.0, 0.0, 0.0],
-                              [-1.0, 0.0, 0.0], [0.0, 1.0, 8.0]])
+                              [-1.0, 0.0, 0.0], [0.0, 1.0, 8.0]], dtype=np.float32)
     self.three_by3 = np.array([[0.0, 0.0, 0.0], [1.0, 0.0, 0.0],
-                               [-1.0, 0.0, 0.0]])
+                               [-1.0, 0.0, 0.0]], dtype=np.float32)
     self.four_type = np.array([1, 1, 1, 1], dtype=np.int32)
     self.two_two_type = np.array([1, 1, 2, 2], dtype=np.int32)
 
@@ -90,7 +90,7 @@ class TestInteraction(unittest.TestCase):
 
   def test_lj_forces_diff(self):
     lj = interaction.LennardJones(5.4, 1.0, 1.0, "None")
-    f, e = lj.forces(self.four_by3, self.four_by3, pairs=[[0, 2], [0, 3], [1, 2], [1, 3]])
+    f, e = lj.forces(self.four_by3, self.four_by3, pairs=np.array([[0, 2], [0, 3], [1, 2], [1, 3]], dtype=np.int64))
     force_by_hand = np.array([[24.0, 0.0, 0.0], [-0.181641, 0.0, 0.0],
                               [-23.818359, 0.0, 0.0], [0.0, 0.0, 0.0]])
     np.testing.assert_array_almost_equal(f, force_by_hand)

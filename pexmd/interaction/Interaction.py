@@ -69,7 +69,7 @@ class ShortRange(Interaction):
   def pair_energ(self, s1, s2):
     return 0.0
 
-lj = ct.CDLL('/home/pablo/proyectos/pexmd/pexmd/interaction/lj.so')
+lj = ct.CDLL('pexmd/interaction/lj.so')
 ljforces_c = lj.forces
 ljforces_c.argtypes = [ct.c_voidp, ct.c_voidp, ct.c_longlong, ct.c_float,
                        ct.c_float, ct.c_float, ct.c_voidp]

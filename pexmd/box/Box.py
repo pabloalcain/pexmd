@@ -4,12 +4,36 @@ Main box module
 
 import numpy as np
 import ctypes as ct
+import itertools as it
 
 box = ct.CDLL('pexmd/box/box.so')
 boxperiodic_c = box.periodic
 boxperiodic_c.argtypes = [ct.c_voidp, ct.c_longlong, ct.c_voidp, ct.c_voidp]
 boxfixed_c = box.fixed
 boxfixed_c.argtypes = [ct.c_voidp, ct.c_voidp, ct.c_longlong, ct.c_voidp, ct.c_voidp]
+
+
+def powerset(images):
+  """
+  Helper function for creating all the possible images.
+  Will be superseeded soon and all implemented in C.
+  powerset([1,2,3]) --> (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)
+
+  Parameters
+  ----------
+
+  images : iterable
+      All the images in each dimension
+
+  Returns
+  -------
+  all_images : iterator
+      All possible combination of images
+
+  """
+  images = list(images)
+  return it.chain.from_iterable(it.combinations(images, n) for n in range(1, len(images)+1))
+
 
 class Box(object):
   """
@@ -66,3 +90,54 @@ class Box(object):
       vp = v.ctypes.data_as(ct.c_voidp)
       boxfixed_c(xp, vp, npart, x0p, xfp)
     return x, v
+
+
+  def create_ghosts(self, x, rcut):
+    """
+    Create ghost particles (that exist to fulfil the boundary conditions)
+
+    Warning: this only works when rcut is less than the size of the box/2
+
+    Parameters
+    ----------
+
+    x : NumPy array
+        Positions of the particles
+
+    rcut : float
+        Cutoff radius
+
+    Returns
+    -------
+
+    ghost_index, ghost_delta : NumPy array
+        Indices and positions change (in box units) for the particles
+    """
+
+    ghost_index = []
+    ghost_position = []
+    # There are better ways to do this, but this will be soon implemented in C
+    if self.t == 'Periodic':
+      delta = self.xf - self.x0
+      for i, pos in enumerate(x):
+        all_delta = []
+        iab = pos - self.x0 < rcut
+        iarr = self.xf - pos < rcut
+        d = np.zeros(3, dtype=np.int32)
+        for k, is_image in enumerate(iab):
+          if is_image:
+            t = d.copy()
+            t[k] = 1
+            all_delta.append(t)
+        for k, is_image in enumerate(iarr):
+          if is_image:
+            t = d.copy()
+            t[k] = -1
+            all_delta.append(t)
+        for images in powerset(all_delta):
+          td = sum(images)
+          ghost_position.append(td)
+          ghost_index.append(i)
+    ghost_index = np.array(ghost_index, dtype=np.int64)
+    ghost_position = np.array(ghost_position, dtype=np.int32)
+    return ghost_index, ghost_position

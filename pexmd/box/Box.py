@@ -92,9 +92,9 @@ class Box(object):
     return x, v
 
 
-  def create_ghosts(self, x, rcut):
+  def find_ghosts(self, x, rcut):
     """
-    Create ghost particles (that exist to fulfil the boundary conditions)
+    Find ghost particles (that exist to fulfil the boundary conditions)
 
     Warning: this only works when rcut is less than the size of the box/2
 
@@ -110,8 +110,8 @@ class Box(object):
     Returns
     -------
 
-    ghost_index, ghost_delta : NumPy array
-        Indices and positions change (in box units) for the particles
+    ghost_index, ghost_position : NumPy array
+        Indices and positions of the ghost particles
     """
 
     ghost_index = []
@@ -136,8 +136,8 @@ class Box(object):
             all_delta.append(t)
         for images in powerset(all_delta):
           td = sum(images)
-          ghost_position.append(td)
+          ghost_position.append(td*delta + x[i])
           ghost_index.append(i)
     ghost_index = np.array(ghost_index, dtype=np.int64)
-    ghost_position = np.array(ghost_position, dtype=np.int32)
+    ghost_position = np.array(ghost_position, dtype=np.float32)
     return ghost_index, ghost_position

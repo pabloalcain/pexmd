@@ -62,20 +62,20 @@ class TestIntegrator(unittest.TestCase):
     np.testing.assert_array_almost_equal(v, self.v_fbc)
 
 
-  def test_create_ghosts_fixed(self):
-    """Don't create ghosts in fixed box."""
+  def test_find_ghosts_fixed(self):
+    """Don't find any ghost in fixed box."""
     b = box.Box(-1, 1, t='Fixed')
-    idx, delta_pos = b.create_ghosts(self.x, rcut=1.0)
+    idx, delta_pos = b.find_ghosts(self.x, rcut=1.0)
     np.testing.assert_array_equal(idx, np.array([]))
     np.testing.assert_array_equal(delta_pos, np.array([]))
 
 
-  def test_create_ghosts_periodic(self):
-    """Create ghosts in periodic box."""
+  def test_find_ghosts_periodic(self):
+    """Find ghosts in periodic box."""
     b = box.Box(-1, 1, t='Periodic')
     x = np.array([[-0.9, 0.9, 0.4], [0.3, -0.4, 0.8]])
-    idx, delta_pos = b.create_ghosts(x, rcut=0.5)
-    xfin = np.array([[1, 0, 0], [0, -1, 0],
-                     [1, -1, 0], [0, 0, -1]])
+    idx, delta_pos = b.find_ghosts(x, rcut=0.5)
+    xfin = np.array([[1.1, 0.9, 0.4], [-0.9, -1.1, 0.4],
+                     [1.1, -1.1, 0.4], [0.3, -0.4, -1.2]])
     np.testing.assert_array_almost_equal(idx, np.array([0, 0, 0, 1]))
     np.testing.assert_array_almost_equal(delta_pos, xfin)

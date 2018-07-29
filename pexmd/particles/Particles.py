@@ -17,6 +17,7 @@ class Base(object):
     self._t = np.zeros(n, dtype=np.int32)
     self._mass = np.zeros(n, dtype=np.float32)
     self.idx = np.arange(n)
+    self.real_idx = None
 
   @property
   def x(self):
@@ -149,7 +150,8 @@ class Base(object):
     """
     n = len(indices)
     ghosts = Base(n)
-    ghosts.idx = indices
+    ghosts.idx = np.arange(n, dtype=np.int64)
+    ghosts.real_idx = indices
     ghosts.x = positions
     for i, idx in enumerate(indices):
       ghosts.v[i] = self.v[idx]

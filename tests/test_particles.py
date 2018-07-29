@@ -112,3 +112,5 @@ class TestParticles(unittest.TestCase):
     np.testing.assert_array_equal(ghosts.t, np.array([1, 1, 4]))
     np.testing.assert_array_equal(ghosts.x, gh_pos)
     np.testing.assert_array_equal(ghosts.mass, np.array([1.0, 1.0, 2.0], dtype=np.float32))
+    np.testing.assert_array_equal(ghosts.idx, np.arange(3, dtype=np.int64))
+    np.testing.assert_array_equal(ghosts.real_idx, gh_idx)

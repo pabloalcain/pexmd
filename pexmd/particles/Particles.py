@@ -143,6 +143,20 @@ class Base(object):
         msg = "Trying to set {0} masses for a system with {1} particles"
         raise ValueError(msg.format(number, self.n))
 
+  def create_ghosts(self, indices, positions):
+    """
+    Create ghosts from indices and positions
+    """
+    n = len(indices)
+    ghosts = Base(n)
+    ghosts.idx = indices
+    ghosts.x = positions
+    for i, idx in enumerate(indices):
+      ghosts.v[i] = self.v[idx]
+      ghosts.t[i] = self.t[idx]
+      ghosts.mass[i] = self.mass[idx]
+    return ghosts
+
 class PointParticles(Base):
   """
   PointParticles class.

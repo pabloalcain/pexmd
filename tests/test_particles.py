@@ -99,3 +99,16 @@ class TestParticles(unittest.TestCase):
     np.testing.assert_array_equal(part.mass, np.array([1, 1, 1, 1], dtype=np.float32))
     sttr = lambda mass: part.__setattr__("mass", mass)
     assert_raises(ValueError, sttr, np.array([1.0, 1.0, 1.0]))
+
+  def test_create_ghosts(self):
+    part = particles.PointParticles(4)
+    part.x = self.lfour_by3
+    part.t = np.array([1, 4, 3, 3], dtype=np.int32)
+    part.mass = np.array([1.0, 2.0, 3.0, 4.0])
+    gh_pos = np.array([[-1.1, 1.0, 0.0], [1.1, 1.0, 0.0],
+                       [1.2, 1.2, 1.2]], dtype=np.float32)
+    gh_idx = np.array([0, 0, 1], dtype=np.int64)
+    ghosts = part.create_ghosts(gh_idx, gh_pos)
+    np.testing.assert_array_equal(ghosts.t, np.array([1, 1, 4]))
+    np.testing.assert_array_equal(ghosts.x, gh_pos)
+    np.testing.assert_array_equal(ghosts.mass, np.array([1.0, 1.0, 2.0], dtype=np.float32))
